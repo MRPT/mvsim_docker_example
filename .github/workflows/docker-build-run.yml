@@ -1,0 +1,45 @@
+name: Docker Build and Run
+
+# Trigger the workflow on every push or pull request to the 'main' branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository code
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Set up Docker Buildx (to enable cross-platform builds, if necessary)
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    # Login to GitHub Docker registry (optional, for private registries)
+    # Uncomment the following lines if you need to push to GitHub Container Registry
+    # - name: Log in to GitHub Container Registry
+    #   uses: docker/login-action@v2
+    #   with:
+    #     registry: ghcr.io
+    #     username: ${{ github.repository_owner }}
+    #     password: ${{ secrets.GITHUB_TOKEN }}
+
+    # Build the Docker image
+    - name: Build Docker image
+      run: docker build -t ros2_humble_mvsim_demo:latest .
+
+    # Run the Docker container
+    - name: Run Docker container
+      run: docker run --rm -it ros2_humble_mvsim_demo:latest
+
+    # (Optional) Run tests inside the Docker container if you want
+    # - name: Run tests
+    #   run: docker run my-docker-image:latest ./run-tests.sh
+

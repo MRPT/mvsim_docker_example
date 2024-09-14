@@ -21,7 +21,7 @@ def generate_launch_description():
             text=os.path.join(mvsimDir, 'mvsim_tutorial', 'demo_warehouse.world.xml')))
 
     headless_launch_arg = DeclareLaunchArgument(
-        "headless", default_value='True')
+        "headless", default_value='False')
 
     do_fake_localization_arg = DeclareLaunchArgument(
         "do_fake_localization", default_value='True', description='publish tf odom -> base_link')
@@ -43,7 +43,7 @@ def generate_launch_description():
 
     robot_commander_node = Node(
         # package='ros2_ws',  # Change this if the script is in another package
-        executable='/ros2_ws/src/robot_commander.py',
+        executable='/home/jlblanco/repos/mvsim_docker_example/robot_commander.py',
         name='robot_commander',
         output='screen'
     )

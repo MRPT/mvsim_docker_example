@@ -1,12 +1,13 @@
 # launch_mvsim.launch.py
 from launch import LaunchDescription
 from launch.substitutions import TextSubstitution
-from launch.actions import DeclareLaunchArgument
-from launch.actions import IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
+from launch.actions import (DeclareLaunchArgument,
+                            EmitEvent, LogInfo, RegisterEventHandler)
+from launch.event_handlers import OnProcessExit
+from launch.events import Shutdown
 import os
 
 
@@ -40,16 +41,27 @@ def generate_launch_description():
             }]
     )
 
+    robot_commander_node = Node(
+        # package='ros2_ws',  # Change this if the script is in another package
+        executable='/ros2_ws/src/robot_commander.py',
+        name='robot_commander',
+        output='screen'
+    )
+
     return LaunchDescription([
         world_file_launch_arg,
         headless_launch_arg,
         do_fake_localization_arg,
         mvsim_node,
-        # Node to execute the Python script
-        Node(
-            # package='ros2_ws',  # Change this if the script is in another package
-            executable='/ros2_ws/src/robot_commander.py',
-            name='robot_commander',
-            output='screen'
+        robot_commander_node,
+        RegisterEventHandler(
+            OnProcessExit(
+                target_action=robot_commander_node,
+                on_exit=[
+                    LogInfo(msg=('robot_commander_node ended')),
+                    EmitEvent(event=Shutdown(
+                        reason='robot_commander_node ended'))
+                ]
+            )
         )
     ])

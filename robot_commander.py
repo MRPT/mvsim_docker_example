@@ -78,10 +78,8 @@ class RobotCommander(Node):
                     f"Robot's orientation: {trans.transform.rotation}")
 
             elif self.iter == 4:
-                print("Cleaning up...")
-                rclpy.shutdown()
-            else:
-                print("Run", self.iter)
+                self.get_logger().info("SHUTTING DOWN")
+                raise SystemExit
 
         except Exception as e:
             self.get_logger().error(
@@ -102,8 +100,14 @@ class RobotCommander(Node):
 
 def main(args=None):
     rclpy.init(args=args)
+
     node = RobotCommander()
-    rclpy.spin(node)
+
+    try:
+        rclpy.spin(node)
+    except SystemExit:
+        rclpy.logging.get_logger("Quitting").info('Done')
+
     node.destroy_node()
     rclpy.shutdown()
 

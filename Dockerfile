@@ -21,10 +21,9 @@ WORKDIR /ros2_ws
 # Build the workspace
 RUN colcon build
 
-# Source ROS 2 upon starting the container
+# Source ROS 2 and setup the environment for the launch file
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 RUN echo "source /ros2_ws/install/setup.bash" >> ~/.bashrc
-RUN echo "ros2 launch src/launch_mvsim.launch.py" >> ~/.bashrc
 
-# Default command when starting the container
-CMD ["/bin/bash"]
+# Default command to launch the ROS 2 simulation
+CMD ["bash", "-c", "source /opt/ros/humble/setup.bash && source /ros2_ws/install/setup.bash && ros2 launch src/launch_mvsim.launch.py"]

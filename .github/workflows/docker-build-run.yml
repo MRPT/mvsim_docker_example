@@ -37,7 +37,7 @@ jobs:
 
     # Run the Docker container
     - name: Run Docker container
-      run: docker run --rm -it ros2_humble_mvsim_demo:latest
+      run: docker run --rm ros2_humble_mvsim_demo:latest
 
     # (Optional) Run tests inside the Docker container if you want
     # - name: Run tests
